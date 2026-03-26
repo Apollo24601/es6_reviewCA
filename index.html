@@ -50,6 +50,26 @@
   <h3>Response:</h3>
   <pre id="response"></pre>
 
+  <h3>Delete User</h3>
+
+<input type="text" id="deleteId" placeholder="Enter User ID">
+<button onclick="deleteUser()">Delete</button>
+
+<h3>Update User</h3>
+
+<input type="text" id="updateId" placeholder="Enter User ID"><br><br>
+
+<input type="text" id="updateName" placeholder="New Name"><br><br>
+
+<input type="number" id="updateAge" placeholder="New Age"><br><br>
+
+<button onclick="updateUser()">Update</button>
+
+<h3>All Users</h3>
+<button onclick="getUsers()">Load Users</button>
+
+<pre id="allUsers"></pre>
+
 <script>
   const form = document.getElementById("catForm");
 
@@ -60,7 +80,7 @@
     const age = document.getElementById("age").value;
 
     try {
-      const res = await fetch("https://es6-reviewca.onrender.com", {
+      const res = await fetch("https://es6-reviewca.onrender.com/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -70,22 +90,91 @@
 
       const data = await res.json();
 
-      // Show success message
       document.getElementById("responseMsg").textContent =
         "✅ User created successfully!";
 
-      // Show JSON response
       document.getElementById("response").textContent =
         JSON.stringify(data, null, 2);
 
-      // Clear form after submit
       form.reset();
 
     } catch (err) {
+      console.error(err);  // <-- helpful for debugging
       document.getElementById("responseMsg").textContent =
         "❌ Error connecting to server";
     }
   });
+
+  async function deleteUser() {
+  const id = document.getElementById("deleteId").value;
+
+  if (!id) {
+    document.getElementById("responseMsg").textContent =
+      "⚠️ Please enter a user ID";
+    return;
+  }
+
+  try {
+    const res = await fetch(`https://es6-reviewca.onrender.com/users/${id}`, {
+      method: "DELETE"
+    });
+
+    const data = await res.json();
+
+    document.getElementById("responseMsg").textContent =
+      "🗑️ User deleted successfully!";
+
+    document.getElementById("response").textContent =
+      JSON.stringify(data, null, 2);
+
+  } catch (err) {
+    document.getElementById("responseMsg").textContent =
+      "❌ Error deleting user";
+  }
+}
+
+async function updateUser() {
+  const id = document.getElementById("updateId").value;
+  const name = document.getElementById("updateName").value;
+  const age = document.getElementById("updateAge").value;
+
+  if (!id) {
+    document.getElementById("responseMsg").textContent =
+      "⚠️ Please enter user ID";
+    return;
+  }
+
+  try {
+    const res = await fetch(`https://es6-reviewca.onrender.com/users/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name, age })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("responseMsg").textContent =
+      "✏️ User updated successfully!";
+
+    document.getElementById("response").textContent =
+      JSON.stringify(data, null, 2);
+
+  } catch (err) {
+    document.getElementById("responseMsg").textContent =
+      "❌ Error updating user";
+  }
+}
+
+async function getUsers() {
+  const res = await fetch("https://es6-reviewca.onrender.com/users");
+  const data = await res.json();
+
+  document.getElementById("allUsers").textContent =
+    JSON.stringify(data, null, 2);
+}
+
 </script>
 
 </body>
