@@ -50,14 +50,17 @@ app.delete("/users/:id", async (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.get("/create-user", async (req, res) => {
+  const { name, age } = req.query;
+
   const user = new User({
-    name: "Draeyn",
-    age: 24
+    name,
+    age
   });
 
   await user.save();
-  res.send("User created successfully");
+  res.json(user);
 });
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

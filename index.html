@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cat Form</title>
+</head>
+<body>
+
+  <h1>Submit Cat Info</h1>
+
+  <form id="catForm">
+    <input type="text" id="name" placeholder="Name" required />
+    <input type="number" id="age" placeholder="Age" required />
+    <button type="submit">Submit</button>
+  </form>
+
+  <h3>Response:</h3>
+  <pre id="response"></pre>
+
+  <script>
+    const form = document.getElementById("catForm");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const age = document.getElementById("age").value;
+
+      const res = await fetch("http://localhost:5000/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, age })
+      });
+
+      const data = await res.json();
+
+      document.getElementById("response").textContent =
+        JSON.stringify(data, null, 2);
+    });
+  </script>
+
+</body>
+</html>
